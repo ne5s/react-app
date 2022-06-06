@@ -10,36 +10,50 @@ function Header() {
   );
 }
 
-function Nav() {
+function Nav(props) {
+  console.log(props.data);
+  const list = props.data.map((e) => {
+    return (
+      <li key={e.id}>
+        <a href={"/read/" + e.id}>{e.title}</a>
+      </li>
+    );
+  });
+  // const list = [
+  //   <li>
+  //     <a href="/read/1">{props.data[0].title}</a>
+  //   </li>,
+  //   <li>
+  //     <a href="/read/2">{props.data[1].title}</a>
+  //   </li>,
+  // ];
   return (
     <nav>
-      <ol>
-        <li>
-          <a href="/read/1">html</a>
-        </li>
-        <li>
-          <a href="/read/2">css</a>
-        </li>
-      </ol>
+      <ol>{list}</ol>
     </nav>
   );
 }
 
-function Article() {
+function Article(props) {
   return (
     <article>
-      <h2>Welcome</h2>
-      Hello, WEB!
+      <h2>{props.title}</h2>
+      {props.body}
     </article>
   );
 }
 
 function App() {
+  const topics = [
+    { id: 1, title: "html", body: "html is ..." },
+    { id: 2, title: "css", body: "css is ..." },
+  ];
   return (
     <div>
       <Header></Header>
-      <Nav></Nav>
-      <Article></Article>
+      <Nav data={topics}></Nav>
+      <Article title="Welcome" body="Hello, WEB!"></Article>
+      <Article title="HTML" body="HTML is ..."></Article>
     </div>
   );
 }
