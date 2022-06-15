@@ -2,88 +2,11 @@ import "./App.css";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { useState } from "react";
-import styled from "styled-components";
 import { Link } from "react-router-dom";
-
-function Header(props) {
-  return (
-    <header className={props.className}>
-      <h1>
-        <Link
-          to="/"
-          onClick={(evt) => {
-            console.log("evt", evt);
-            props.onSelect();
-          }}
-        >
-          WWW
-        </Link>
-      </h1>
-    </header>
-  );
-}
-
-const HeaderStyled = styled(Header)`
-  border-bottom: 1px solid gray;
-`;
-
-function Nav(props) {
-  // console.log(props.data);
-  const list = props.data.map((e) => {
-    return (
-      <li key={e.id}>
-        <Link
-          to={"/read/" + e.id}
-          onClick={(evt) => {
-            props.onClick(e.id);
-          }}
-        >
-          {e.title}
-        </Link>
-      </li>
-    );
-  });
-  return (
-    <nav>
-      <ol>{list}</ol>
-    </nav>
-  );
-}
-
-function Article(props) {
-  return (
-    <article>
-      <h2>{props.title}</h2>
-      {props.body}
-    </article>
-  );
-}
-
-function Create(props) {
-  return (
-    <article>
-      <h2>Create</h2>
-      <form
-        onSubmit={(evt) => {
-          evt.preventDefault();
-          const title = evt.target.title.value;
-          const body = evt.target.body.value;
-          props.onCreate(title, body);
-        }}
-      >
-        <p>
-          <input type="text" name="title" placeholder="title"></input>
-        </p>
-        <p>
-          <textarea name="body" placeholder="body"></textarea>
-        </p>
-        <p>
-          <input type="submit" value="Create"></input>
-        </p>
-      </form>
-    </article>
-  );
-}
+import { HeaderStyled } from "./HeaderStyled";
+import { Nav } from "./Nav";
+import { Article } from "./Article";
+import { Create } from "./Create";
 
 function App() {
   const [mode, setMode] = useState("WELCOME");
@@ -126,20 +49,8 @@ function App() {
 
   return (
     <div>
-      <HeaderStyled
-        onSelect={() => {
-          // mode = "WELCOME";
-          setMode("WELCOME");
-        }}
-      ></HeaderStyled>
-      <Nav
-        data={topics}
-        onClick={(id) => {
-          // mode = "READ";
-          setMode("READ");
-          setId(id);
-        }}
-      ></Nav>
+      <HeaderStyled onSelect={headerHandler()}></HeaderStyled>
+      <Nav data={topics} onClick={navHandler()}></Nav>
       {content}
       <br></br>
       <ButtonGroup>
@@ -147,32 +58,50 @@ function App() {
           component={Link}
           to="/create"
           variant="outlined"
-          onClick={() => {
-            setMode("CREATE");
-          }}
+          onClick={createHandler()}
         >
           Create
         </Button>
         <Button variant="outlined">Update</Button>
       </ButtonGroup>
-      <Button
-        variant="outlined"
-        onClick={() => {
-          const newTopics = topics.filter((e) => {
-            if (e.id === id) {
-              return false;
-            } else {
-              return true;
-            }
-          });
-          setTopics(newTopics);
-          setMode("WELCOME");
-        }}
-      >
+      <Button variant="outlined" onClick={deleteHandler()}>
         Delete
       </Button>
     </div>
   );
+
+  function navHandler() {
+    return (id) => {
+      setMode("READ");
+      setId(id);
+    };
+  }
+
+  function deleteHandler() {
+    return () => {
+      const newTopics = topics.filter((e) => {
+        if (e.id === id) {
+          return false;
+        } else {
+          return true;
+        }
+      });
+      setTopics(newTopics);
+      setMode("WELCOME");
+    };
+  }
+
+  function createHandler() {
+    return () => {
+      setMode("CREATE");
+    };
+  }
+
+  function headerHandler() {
+    return () => {
+      setMode("WELCOME");
+    };
+  }
 }
 
 export default App;
