@@ -40,13 +40,16 @@ function Create(props){
     <p><input type="submit" value="create" /></p>
   </form>
 }
-function Control(){
+function Control(props){
   const param = useParams();
   const id = Number(param.id);
   let contextUI = null;
   if(id){
     contextUI = <>
       <Link to={'/update/'+id}>Update</Link>
+      <button onClick={()=>{
+        props.onDelete(id);
+      }}>delete</button>
     </>
   }
   return <ul>
@@ -122,6 +125,14 @@ function App() {
     navigate('/read/'+result.id);
     refreshTopics();
   }
+  const deleteHandler = async (id)=>{
+    const resp = await fetch('http://localhost:3333/topics/'+id,{
+      method: 'DELETE'
+    })
+    const result = await resp.json();
+    navigate('/');
+    refreshTopics();
+  }
   return (
     <div>
       <Header></Header>
@@ -134,7 +145,7 @@ function App() {
       </Routes>
       <Routes>
         {['/', '/read/:id', '/create'].map(e=>{
-          return <Route key={e} path={e} element={<Control></Control>}></Route>
+          return <Route key={e} path={e} element={<Control onDelete={deleteHandler}></Control>}></Route>
         })}
       </Routes>
     </div>
