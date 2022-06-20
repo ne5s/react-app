@@ -1,6 +1,7 @@
-import styled from "styled-components";
 import { Header } from "./Header";
+import styled from "styled-components";
 
 export const HeaderStyled = styled(Header)`
-  border-bottom: 1px solid gray;
+    border-bottom:1px solid gray;
+    color:red;
 `;
