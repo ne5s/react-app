@@ -54,7 +54,7 @@ function Control(){
     {contextUI}
   </ul>
 }
-function Update(){
+function Update(props){
   const param = useParams();
   const id = Number(param.id);
   const [title, setTitle] = useState(null);
@@ -71,24 +71,20 @@ function Update(){
   
   const navigate = useNavigate();
   const submitHandler = async (evt)=>{
-    evt.preventDefault();
+    evt.preventDefault();    
     const title = evt.target.title.value;
     const body = evt.target.body.value;
-    const resp = await fetch('http://localhost:3333/topics',{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({title, body})
-    })
-    const result = await resp.json();
-    navigate('/read/'+result.id);
+    props.onUpdate(id,title,body)    
   }
   return <form onSubmit={submitHandler}>
     <h2>Update</h2>
-    <p><input type="text" name="title" placeholder="title" value={title}></input></p>
-    <p><textarea name="body" placeholder="body" value={body}></textarea></p>
-    <p><input type="submit" value="create" /></p>
+    <p><input type="text" name="title" placeholder="title" value={title} onChange={(evt)=>{
+      setTitle(evt.target.value);
+    }}></input></p>
+    <p><textarea name="body" placeholder="body" value={body} onChange={evt=>{
+      setBody(evt.target.value);
+    }}></textarea></p>
+    <p><input type="submit" value="update" /></p>
   </form>
 }
 function App() {
@@ -114,6 +110,18 @@ function App() {
     navigate('/read/'+result.id);
     refreshTopics();
   }
+  const updateHandler = async (id,title,body)=>{
+    const resp = await fetch('http://localhost:3333/topics/'+id,{
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({title, body})
+    })
+    const result = await resp.json();
+    navigate('/read/'+result.id);
+    refreshTopics();
+  }
   return (
     <div>
       <Header></Header>
@@ -122,7 +130,7 @@ function App() {
         <Route path="/" element={<><h2>Welcome</h2>Hello, React!</>}></Route>
         <Route path="/read/:id" element={<Read></Read>}></Route>
         <Route path="/create" element={<Create onCreate={createHandler}></Create>}></Route>
-        <Route path="/update/:id" element={<Update></Update>}></Route>
+        <Route path="/update/:id" element={<Update onUpdate={updateHandler}></Update>}></Route>
       </Routes>
       <Routes>
         {['/', '/read/:id', '/create'].map(e=>{
