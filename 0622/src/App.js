@@ -1,5 +1,7 @@
 import "./App.css";
-import {useSelector, useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux'
+import countUp, {up} from './countUpSlice';
+import countDown from './countDownSlice';
 function Left1(props) {
   return (
     <div>
@@ -18,15 +20,38 @@ function Left2(props) {
 }
 function Left3(props) {
   const dispatch = useDispatch();
+  // actionCreator
+  // function up(step) {
+  //   return {type:'countUp/up', payload:step}
+  // }
   return (
     <div>
       <h1>Left3</h1>
       <button
         onClick={() => {
-          dispatch({type:'UP', step:2})
+          // reduex시
+          // dispatch({type:'UP', step:2})
+          // dispatch(countUp.actions.up(2));
+          // dispatch({type:'countUp/up', payload:2})
+          // dispatch(up(2));
+          
+          // dispatch(countUp.actions.up(2));
+          dispatch(up(2));
         }}
       >
         +
+      </button>
+      <button
+        onClick={() => {
+          // reduex시
+          // dispatch({type:'UP', step:2})
+          // dispatch(countUp.actions.up(2));
+          // dispatch({type:'countUp/up', payload:2})
+          // dispatch(up(2));
+          dispatch(countDown.actions.down(2));
+        }}
+      >
+        -
       </button>
     </div>
   );
@@ -48,13 +73,16 @@ function Right2(props) {
   );
 }
 function Right3(props) {
-  const value = useSelector(state=>{
-    return state.value;
+  const countUpValue = useSelector(state=>{
+    return state.countUp.value;
+  })
+  const countDownValue = useSelector(state => {
+    return state.countDown.value;
   })
   return (
     <div>
       <h1>Right3</h1>
-      {value}
+      {countUpValue} | {countDownValue}
     </div>
   );
 }
