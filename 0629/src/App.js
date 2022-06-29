@@ -4,6 +4,7 @@ import { Routes, Route, useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Welcome } from "./Welcome";
 import { Nav } from "./Nav";
+import { Create } from "./Create";
 
 function Read() {
   const params = useParams();
@@ -47,33 +48,6 @@ function Control() {
     </ul>
   );
 }
-// 1. Create 만든다.
-// 2. form 태그 > 제목, 본문, 전송 버튼을 만든다.
-// 3. Route에 연결한다.
-function Create({ onCreate }) {
-  return (
-    <article>
-      <h1>Create</h1>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onCreate(e.target.title.value, e.target.body.value);
-        }}
-      >
-        <p>
-          <input type="text" name="title" placeholder="title"></input>
-        </p>
-        <p>
-          <textarea name="body" placeholder="body"></textarea>
-        </p>
-        <p>
-          <input type="submit" value="create"></input>
-        </p>
-      </form>
-    </article>
-  );
-}
-
 function App() {
   const [topics, setTopics] = useState([]);
   const navigate = useNavigate();
