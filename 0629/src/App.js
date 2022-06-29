@@ -26,10 +26,23 @@ function Read() {
 }
 
 function Control() {
+  const params = useParams();
+  const id = Number(params.id);
+  let contextUI = null;
+  if (id) {
+    contextUI = (
+      <>
+        <li>
+          <Link to={`/update/${id}`}>Update</Link>
+        </li>
+      </>
+    );
+  }
   return (
     <ul>
       <li>
         <Link to="/create">Create</Link>
+        {contextUI}
       </li>
     </ul>
   );
@@ -96,7 +109,10 @@ function App() {
           element={<Create onCreate={createHandler}></Create>}
         ></Route>
       </Routes>
-      <Control></Control>
+      <Routes>
+        <Route path="/" element={<Control></Control>}></Route>
+        <Route path="/read/:id" element={<Control></Control>}></Route>
+      </Routes>
     </div>
   );
 }
