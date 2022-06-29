@@ -1,6 +1,6 @@
 import "./App.css";
 import { Header } from "./Header";
-import { Routes, Route, useParams, Link } from "react-router-dom";
+import { Routes, Route, useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Welcome } from "./Welcome";
 import { Nav } from "./Nav";
@@ -37,11 +37,16 @@ function Control() {
 // 1. Create 만든다.
 // 2. form 태그 > 제목, 본문, 전송 버튼을 만든다.
 // 3. Route에 연결한다.
-function Create() {
+function Create({ onCreate }) {
   return (
     <article>
       <h1>Create</h1>
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onCreate(e.target.title.value, e.target.body.value);
+        }}
+      >
         <p>
           <input type="text" name="title" placeholder="title"></input>
         </p>
@@ -58,6 +63,7 @@ function Create() {
 
 function App() {
   const [topics, setTopics] = useState([]);
+  const navigate = useNavigate();
   async function refresh() {
     const resp = await fetch("http://localhost:3333/topics");
     const data = await resp.json();
@@ -66,6 +72,18 @@ function App() {
   useEffect(() => {
     refresh();
   }, []);
+  async function createHandler(title, body) {
+    const resp = await fetch("http://localhost:3333/topics", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title, body }),
+    });
+    const data = await resp.json();
+    navigate(`/read/${data.id}`);
+    refresh();
+  }
   return (
     <div>
       <Header></Header>
@@ -73,7 +91,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Welcome></Welcome>}></Route>
         <Route path="/read/:id" element={<Read></Read>}></Route>
-        <Route path="/create" element={<Create></Create>}></Route>
+        <Route
+          path="/create"
+          element={<Create onCreate={createHandler}></Create>}
+        ></Route>
       </Routes>
       <Control></Control>
     </div>
