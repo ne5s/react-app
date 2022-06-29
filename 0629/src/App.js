@@ -5,26 +5,7 @@ import { useEffect, useState } from "react";
 import { Welcome } from "./Welcome";
 import { Nav } from "./Nav";
 import { Create } from "./Create";
-
-function Read() {
-  const params = useParams();
-  const id = Number(params.id);
-  const [topic, setTopic] = useState({ title: null, body: null });
-  async function refresh() {
-    const resp = await fetch("http://localhost:3333/topics/" + id);
-    const data = await resp.json();
-    setTopic(data);
-  }
-  useEffect(() => {
-    refresh();
-  }, [id]);
-  return (
-    <article>
-      <h2>{topic.title}</h2>
-      {topic.body}
-    </article>
-  );
-}
+import { Read } from "./Read";
 
 function Control() {
   const params = useParams();
