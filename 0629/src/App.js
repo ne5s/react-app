@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Welcome } from "./Welcome";
 import { Nav } from "./Nav";
 import { Create } from "./Create";
+import { Update } from "./Update";
 import { Read } from "./Read";
 
 function Control() {
@@ -52,6 +53,19 @@ function App() {
     navigate(`/read/${data.id}`);
     refresh();
   }
+
+  async function updateHandler(id, title, body) {
+    const resp = await fetch("http://localhost:3333/topics/" + id, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title, body }),
+    });
+    const data = await resp.json();
+    navigate(`/read/${data.id}`);
+    refresh();
+  }
   return (
     <div>
       <Header></Header>
@@ -59,6 +73,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Welcome></Welcome>}></Route>
         <Route path="/read/:id" element={<Read></Read>}></Route>
+        <Route
+          path="/update/:id"
+          element={<Update onUpdate={updateHandler}></Update>}
+        ></Route>
         <Route
           path="/create"
           element={<Create onCreate={createHandler}></Create>}
