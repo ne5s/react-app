@@ -1,26 +1,30 @@
 import "./App.css";
 import { Header } from "./Header";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link, Routes, Route, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Welcome } from "./Welcome";
 
-function Nav() {
+function Nav({ data }) {
   return (
     <nav>
       <ol>
-        <li>
-          <Link to="/read/1">html</Link>
-        </li>
+        {data.map((e) => (
+          <li key={e.id}>
+            <Link to={`/read/${e.id}`}>{e.title}</Link>
+          </li>
+        ))}
       </ol>
     </nav>
   );
 }
 
 function Read() {
+  const params = useParams();
+  const id = Number(params.id);
   return (
     <article>
       <h2>Read</h2>
-      Hello, Read
+      Hello, Read {id}
     </article>
   );
 }
@@ -37,15 +41,13 @@ function App() {
     refresh();
   }, []);
 
-  const ui = topics.map((e) => <li key={e.id}>{e.title}</li>);
   return (
     <div className="App">
       <Header></Header>
-      <Nav></Nav>
-      <ol>{ui}</ol>
+      <Nav data={topics}></Nav>
       <Routes>
         <Route path="/" element={<Welcome />} />
-        <Route path="read/1" element={<Read />} />
+        <Route path="read/:id" element={<Read />} />
       </Routes>
     </div>
   );
