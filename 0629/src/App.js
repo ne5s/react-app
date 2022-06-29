@@ -8,7 +8,7 @@ import { Create } from "./Create";
 import { Update } from "./Update";
 import { Read } from "./Read";
 
-function Control() {
+function Control(props) {
   const params = useParams();
   const id = Number(params.id);
   let contextUI = null;
@@ -17,6 +17,15 @@ function Control() {
       <>
         <li>
           <Link to={`/update/${id}`}>Update</Link>
+        </li>
+        <li>
+          <button
+            onClick={() => {
+              props.onDelete(id);
+            }}
+          >
+            Delete
+          </button>
         </li>
       </>
     );
@@ -50,8 +59,8 @@ function App() {
       body: JSON.stringify({ title, body }),
     });
     const data = await resp.json();
-    navigate(`/read/${data.id}`);
     refresh();
+    navigate(`/read/${data.id}`);
   }
 
   async function updateHandler(id, title, body) {
@@ -63,8 +72,17 @@ function App() {
       body: JSON.stringify({ title, body }),
     });
     const data = await resp.json();
-    navigate(`/read/${data.id}`);
     refresh();
+    navigate(`/read/${data.id}`);
+  }
+
+  async function deleteHandler(id) {
+    const resp = await fetch("http://localhost:3333/topics/" + id, {
+      method: "DELETE",
+    });
+    const data = await resp.json();
+    refresh();
+    navigate("/");
   }
   return (
     <div>
@@ -84,7 +102,10 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/" element={<Control></Control>}></Route>
-        <Route path="/read/:id" element={<Control></Control>}></Route>
+        <Route
+          path="/read/:id"
+          element={<Control onDelete={deleteHandler}></Control>}
+        ></Route>
       </Routes>
     </div>
   );
